@@ -17,6 +17,7 @@ The ZSend Wash API provides a RESTful interface for managing private cryptocurre
 1. [Authentication](#authentication)
 2. [Endpoints](#endpoints)
    - [Health Check](#health-check)
+   - [Get Statistics](#get-statistics)
    - [Get Quote](#get-quote)
    - [Create Wash](#create-wash)
    - [Get Wash Status](#get-wash-status)
@@ -62,6 +63,60 @@ Check if the API is running and healthy.
 
 ---
 
+### Get Statistics
+
+Get public statistics for the wash service. This endpoint does not require authentication and is designed for public display on websites.
+
+**Endpoint:** `GET /api/v1/stats`
+
+**Authentication:** Not required
+
+**Example Request:**
+```bash
+curl -X GET "https://api.zsend.app/api/v1/stats"
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "stats": {
+    "volume": {
+      "current": 21220.27,
+      "total": 2270432.23
+    },
+    "swaps": {
+      "current": 12376,
+      "total": 834514
+    },
+    "period": {
+      "start": "2024-01-08T10:30:00.000000",
+      "end": "2024-01-15T10:30:00.000000",
+      "days": 7
+    },
+    "last_updated": "2024-01-15T10:30:00.000000"
+  }
+}
+```
+
+**Response Fields:**
+| Field | Type | Description |
+|-------|------|-------------|
+| volume.current | float | Total volume for the current period (last 7 days) |
+| volume.total | float | Total volume (all time) |
+| swaps.current | integer | Number of completed swaps in the current period (last 7 days) |
+| swaps.total | integer | Total number of completed swaps (all time) |
+| period.start | string | Start date of the current period (ISO format) |
+| period.end | string | End date of the current period (ISO format) |
+| period.days | integer | Number of days in the current period |
+| last_updated | string | Timestamp when statistics were last updated (ISO format) |
+
+**Status Codes:**
+- `200 OK` - Statistics retrieved successfully
+- `500 Internal Server Error` - Server error
+
+---
+
 ### Get Quote
 
 Get a quote for a wash operation. The quote includes the fee breakdown and expected amount received.
@@ -90,7 +145,7 @@ curl -X GET "https://api.zsend.app/api/v1/wash/quote?amount=1.5" \
     "fee_percent": 5.0,
     "fee_amount": 0.075,
     "amount_received": 1.425,
-    "currency": "SOL",
+    "currency": "SOL",  # Currency identifier
     "quote_timestamp": "2024-01-15T10:30:00.000000"
   }
 }
