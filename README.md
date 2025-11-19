@@ -180,9 +180,7 @@ Create a new wash operation. This will create a wash record in "awaiting" status
 ```json
 {
     "destination_wallet": "YourDestinationAddressHere",
-  "amount": "1.5",
-  "washer_wallet": "OptionalWasherWalletAddress",
-  "washer_wallet_pkey": "OptionalBase58PrivateKey"
+    "amount": "1.5"
 }
 ```
 
@@ -191,8 +189,8 @@ Create a new wash operation. This will create a wash record in "awaiting" status
 |-------|------|----------|-------------|
 | destination_wallet | string | Yes | Wallet address that will receive the final output |
 | amount | string/float | Yes | Amount to wash (must be positive) |
-| washer_wallet | string | No | Wallet address that will receive the initial deposit. If not provided, you'll need to send funds to a generated address |
-| washer_wallet_pkey | string | No | Private key for the washer wallet. Required if washer_wallet is provided |
+
+**Note:** A unique deposit wallet (`washer_wallet`) is automatically generated for each wash operation and returned in the response. You must send the SOL to this generated address to initiate the wash.
 
 **Example Request:**
 ```bash
@@ -211,6 +209,8 @@ curl -X POST "https://api.zsend.app/api/v1/wash/create" \
   "success": true,
   "wash": {
     "wash_id": 123,
+    "exchange_id": "ABC123XYZ",
+    "washer_wallet": "Gd9CufCg1sdgoyTmrC5WJBJedtUSfRuyof6gNDnkxmD5",
     "destination_wallet": "7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU",
     "amount": "1.5",
     "status": "awaiting",
@@ -218,6 +218,10 @@ curl -X POST "https://api.zsend.app/api/v1/wash/create" \
   }
 }
 ```
+
+**Response Fields:**
+- `washer_wallet`: The deposit address where you must send your SOL. This is automatically generated for each wash.
+- `exchange_id`: Unique identifier for this wash operation.
 
 **Status Codes:**
 - `201 Created` - Wash created successfully
